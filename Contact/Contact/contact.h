@@ -2,8 +2,12 @@
 //类型的声明+函数的声明
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-#define MAX 1000 //通讯录人数
+//#define MAX 1000 //通讯录人数
+
+#define DEFAULT_SZ 3
+#define INC 2
 
 #define MAX_NAME 20
 #define MAX_TELE 12
@@ -22,11 +26,22 @@ typedef struct PeoInfo
 	short age;
 }PeoInfo;
 
+//typedef struct Contact
+//{
+//	PeoInfo data[MAX];//数据
+//	int sz; //有效个数
+//}Contact;
+
+//默认可以存放3个人的信息
 typedef struct Contact
 {
-	PeoInfo data[MAX];//数据
-	int sz; //有效个数
+	PeoInfo *data; //数据
+	int sz;        //有效元素个数
+	int capacity;  //通讯录当前的容量
 }Contact;
+
+//初始化通讯录
+void init_contact(Contact* pc);
 
 //添加一个人的信息
 void add_contact(Contact *pc);
@@ -45,3 +60,6 @@ void modify_contact(Contact* pc);
 
 //排序通讯录的数据
 void sort_contact(Contact* pc);
+
+//销毁通讯录
+void destroy_contact(Contact* pc);

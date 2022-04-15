@@ -1,38 +1,100 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #include "contact.h"
 #include <stdio.h>
+#include <assert.h>
+
+void init_contact(Contact* pc)
+{
+	assert(pc);
+	pc->sz = 0;
+	pc->capacity = DEFAULT_SZ;
+	pc->data = (PeoInfo*)malloc(DEFAULT_SZ * sizeof(PeoInfo));
+	if (pc->data == NULL)
+	{
+		perror("InitContact::mallloc");
+		return;
+	}
+}
+
+void destroy_contact(Contact* pc)
+{
+	assert(pc);
+	free(pc->data);
+	pc->data = NULL;
+	pc->capacity = 0;
+	pc->sz = 0;
+}
+
 
 //Ìí¼ÓÍ¨Ñ¶Â¼³ÉÔ±
+//void add_contact(Contact* pc)
+//{
+//
+//	if (pc->sz == MAX)
+//	{
+//		printf("Í¨Ñ¶Â¼ÒÑÂú\n");
+//	}
+//	else
+//	{
+//		printf("ÇëÊäÈëÃû×Ö:>");
+//		scanf("%s", pc->data[pc->sz].name);
+//		printf("ÇëÊäÈëµç»°:>"); 
+//		scanf("%s", pc->data[pc->sz].tele);
+//		printf("ÇëÊäÈëµØÖ·:>");
+//		scanf("%s", pc->data[pc->sz].addr);
+//		printf("ÇëÊäÈëQQ:>"); 
+//		scanf("%s", pc->data[pc->sz].qq);
+//		printf("ÇëÊäÈëĞÔ±ğ:>");
+//		scanf("%s", pc->data[pc->sz].sex);
+//		printf("ÇëÊäÈëÄêÁä:>");
+//		scanf("%hd", &(pc->data[pc->sz].age));//age×÷ÎªÒ»¸ö±äÁ¿£¬ĞèÒª&²ÅÄÜÊäÈë
+//
+//		pc->sz++;
+//		printf("Ìí¼Ó³É¹¦\n");
+//	}
+//}
+
 void add_contact(Contact* pc)
 {
-
-	if (pc->sz == MAX)
+	assert(pc);
+	if (pc->sz == pc->capacity)//Èç¹ûÈËÂúÁË£¬ÔòÔö´óÈİÁ¿
 	{
-		printf("Í¨Ñ¶Â¼ÒÑÂú\n");
+		//ÔöÈİ
+		PeoInfo* ptr = (PeoInfo*)realloc(pc->data, (pc->capacity + INC) * sizeof(PeoInfo));
+		if (ptr != NULL)
+		{
+			pc->data = ptr;
+			pc->capacity += INC;
+			printf("ÔöÈİ³É¹¦\n");
+		}
+		else
+		{
+			perror("add_contact::realloc");
+			return;
+		}
 	}
-	else
-	{
-		printf("ÇëÊäÈëÃû×Ö:>");
-		scanf("%s", pc->data[pc->sz].name);
-		printf("ÇëÊäÈëµç»°:>"); 
-		scanf("%s", pc->data[pc->sz].tele);
-		printf("ÇëÊäÈëµØÖ·:>");
-		scanf("%s", pc->data[pc->sz].addr);
-		printf("ÇëÊäÈëQQ:>"); 
-		scanf("%s", pc->data[pc->sz].qq);
-		printf("ÇëÊäÈëĞÔ±ğ:>");
-		scanf("%s", pc->data[pc->sz].sex);
-		printf("ÇëÊäÈëÄêÁä:>");
-		scanf("%hd", &(pc->data[pc->sz].age));//age×÷ÎªÒ»¸ö±äÁ¿£¬ĞèÒª&²ÅÄÜÊäÈë
+	//Â¼ÈëĞÅÏ¢
+	printf("ÇëÊäÈëÃû×Ö:>");
+	scanf("%s", pc->data[pc->sz].name);
+	printf("ÇëÊäÈëµç»°:>");
+	scanf("%s", pc->data[pc->sz].tele);
+	printf("ÇëÊäÈëµØÖ·:>");
+	scanf("%s", pc->data[pc->sz].addr);
+	printf("ÇëÊäÈëQQ:>");
+	scanf("%s", pc->data[pc->sz].qq);
+	printf("ÇëÊäÈëĞÔ±ğ:>");
+	scanf("%s", pc->data[pc->sz].sex);
+	printf("ÇëÊäÈëÄêÁä:>");
+	scanf("%hd", &(pc->data[pc->sz].age));//age×÷ÎªÒ»¸ö±äÁ¿£¬ĞèÒª&²ÅÄÜÊäÈë
 
-		pc->sz++;
-		printf("Ìí¼Ó³É¹¦\n");
-	}
+	pc->sz++;
+	printf("Ìí¼Ó³É¹¦\n");
 }
 
 
 void show_contact(Contact* pc)
 {
+	assert(pc);
 	int i = 0;
 	printf("%20s %12s %30s %5s %12s %5s\n","Ãû×Ö","µç»°","µØÖ·","ÄêÁä","QQ", "ĞÔ±ğ");
 	for (i = 0; i < pc->sz; i++) 
@@ -43,6 +105,7 @@ void show_contact(Contact* pc)
 
 static int find_peo_by_name(Contact* pc, char name[])  //ÓÃstaticĞŞÊÎ£¬¸Ãº¯ÊıÖ»ÄÜÔÚ×Ô¼ºËùÔÚµÄÔ´ÎÄ¼şÄÚ²¿ÄÜ¿´µ½
 {
+	assert(pc);
 	int i = 0;
 	for (i = 0; i < pc->sz; i++)
 	{
@@ -57,6 +120,7 @@ static int find_peo_by_name(Contact* pc, char name[])  //ÓÃstaticĞŞÊÎ£¬¸Ãº¯ÊıÖ»Ä
 
 void del_contact(Contact* pc)
 {
+	assert(pc);
 	if (pc->sz == 0)
 	{
 		printf("±§Ç¸£¬Í¨Ñ¶Â¼Îª¿Õ");
@@ -88,6 +152,7 @@ void del_contact(Contact* pc)
 
 void search_contact(Contact* pc)
 {
+	assert(pc);
 	char name[MAX_NAME];
 	printf("ÇëÊäÈëÒª²éÕÒÈËµÄÃû×Ö:>");
 	scanf("%s", name);
@@ -105,6 +170,7 @@ void search_contact(Contact* pc)
 
 void modify_contact(Contact* pc)
 {
+	assert(pc);
 	char name[MAX_NAME];
 	printf("ÇëÊäÈëÒªĞŞ¸ÄÕßµÄÃû×Ö:>");
 	scanf("%s", name);
@@ -134,6 +200,7 @@ void modify_contact(Contact* pc)
 
 void sort_contact(Contact* pc)
 {
+	assert(pc);
 	int i = 0;
 	int j = 0;
 	for (i = 0; i < pc->sz - 1; i++)
